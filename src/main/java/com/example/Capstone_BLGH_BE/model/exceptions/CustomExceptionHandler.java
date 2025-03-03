@@ -18,6 +18,11 @@ public class CustomExceptionHandler {
         ApiError apiError = new ApiError(ex.getMessage(),HttpStatus.BAD_REQUEST);
         return  new ResponseEntity<>(apiError, apiError.getStatus());
     }
+    @ExceptionHandler(EventDuplicateException.class)
+    public ResponseEntity<ApiError> handleEventDuplicateException(EventDuplicateException ex) {
+        ApiError apiError = new ApiError(ex.getMessage(),HttpStatus.CONFLICT);
+        return  new ResponseEntity<>(apiError, apiError.getStatus());
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGenericException(Exception ex) {
