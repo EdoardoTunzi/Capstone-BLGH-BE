@@ -1,6 +1,8 @@
 package com.example.Capstone_BLGH_BE.controller;
 
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.example.Capstone_BLGH_BE.model.payload.EventoDTO;
 import com.example.Capstone_BLGH_BE.model.payload.UtenteDTO;
 import com.example.Capstone_BLGH_BE.model.payload.request.PasswordChangeRequest;
@@ -16,6 +18,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
@@ -26,6 +32,9 @@ public class UtenteController {
 
     @Autowired
     EventoService eventoService;
+
+    @Autowired
+    Cloudinary cloudinaryConfig;
 
     //ritorna i dati dell'utente loggato
     @GetMapping("/me")
@@ -50,6 +59,20 @@ public class UtenteController {
         String username = authentication.getName();
         String messaggio = utenteService.updatePasswordUtenteByUsername(username, request.getOldPassword(), request.getNewPassword());
         return new ResponseEntity<>(messaggio, HttpStatus.OK);
+    }
+
+    @PutMapping("/me/avatar")
+    public ResponseEntity<?> updateLoggedUtenteAvatar(@RequestPart("avatar")MultipartFile avatar) {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication.getName();
+            Map mappa = cloudinaryConfig.uploader().upload(avatar.getBytes(), ObjectUtils.emptyMap());
+            String urlImage = mappa.get("secure_url").toString();
+            utenteService.updateAvatarPicByUsername(username, urlImage);
+            return new ResponseEntity<>("Immagine avatar sostituita", HttpStatus.OK);
+        } catch (IOException e) {
+            throw new RuntimeException("Errore nel caricamento dell'immagine. " + e );
+        }
     }
 
     @DeleteMapping("/me")

@@ -129,6 +129,14 @@ public class UtenteService {
         return "Password modificata correttamente!";
     }
 
+    //Modifica foto profilo dell'utente loggato
+    public String updateAvatarPicByUsername(String username, String urlImg) {
+        Utente utenteTrovato = utenteRepo.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException("Utente non trovato."));
+        utenteTrovato.setAvatar(urlImg);
+        return "Immagine profilo modificata con successo";
+    }
+
     //Eliminazione dell'utente loggato
     public String deleteLoggedUtente(String username) {
         Utente utenteTrovato = utenteRepo.findByUsername(username)
