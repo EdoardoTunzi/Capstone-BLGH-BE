@@ -1,9 +1,12 @@
 package com.example.Capstone_BLGH_BE.service;
 
+import com.example.Capstone_BLGH_BE.model.entities.Band;
 import com.example.Capstone_BLGH_BE.model.entities.Evento;
 import com.example.Capstone_BLGH_BE.model.exceptions.EventDuplicateException;
 import com.example.Capstone_BLGH_BE.model.exceptions.NotFoundException;
 import com.example.Capstone_BLGH_BE.model.payload.EventoDTO;
+import com.example.Capstone_BLGH_BE.model.payload.request.EventoDTORequest;
+import com.example.Capstone_BLGH_BE.repository.BandDAORepository;
 import com.example.Capstone_BLGH_BE.repository.EventoDAORepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +24,20 @@ import java.util.Optional;
 public class EventoService {
     @Autowired
     EventoDAORepository eventoRepo;
+    @Autowired
+    BandDAORepository bandRepo;
 
     //Crea nuovo evento
-    public String creaEvento(EventoDTO eventoDTO) {
-        checkDuplicati(eventoDTO.getNome());
-        Evento nuovoEvento = dto_entity(eventoDTO);
+    public String createEvento(EventoDTORequest eventoDTORequest) {
+        checkDuplicati(eventoDTORequest.getNome());
+        //Recupero la band da associare all'evento
+        Band band = bandRepo.findById(eventoDTORequest.getBandId())
+                .orElseThrow(()-> new NotFoundException("Nessuna Band trovata con id: " + eventoDTORequest.getBandId()));
+
+        Evento nuovoEvento = dtoReq_entity(eventoDTORequest);
+        nuovoEvento.setBand(band);
         Evento eventoSalvato = eventoRepo.save(nuovoEvento);
-        return "Evento: " + nuovoEvento.getNome() + " salvato con Id: " + eventoSalvato.getId();
+        return "Evento: " + nuovoEvento.getNome() + " ,salvato con Id: " + eventoSalvato.getId();
     }
 
     //Check eventi duplicati
@@ -88,6 +98,8 @@ public class EventoService {
         }
     }
 
+    //Get all eventi di una band
+
     //---------------------Travasi DTO----------------------------
 
     public Evento dto_entity(EventoDTO dto) {
@@ -99,6 +111,17 @@ public class EventoService {
         e.setOra(dto.getOra());
         e.setLocandina(dto.getLocandina());
         e.setBand(dto.getBand());
+        return e;
+    }
+
+    public Evento dtoReq_entity(EventoDTORequest dto) {
+        Evento e = new Evento();
+        e.setNome(dto.getNome());
+        e.setDescrizione(dto.getDescrizione());
+        e.setLocation(dto.getLocation());
+        e.setData(dto.getData());
+        e.setOra(dto.getOra());
+        e.setLocandina(dto.getLocandina());
         return e;
     }
 
