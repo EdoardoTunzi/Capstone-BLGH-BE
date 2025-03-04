@@ -1,5 +1,6 @@
 package com.example.Capstone_BLGH_BE.service;
 
+
 import com.example.Capstone_BLGH_BE.model.entities.Utente;
 import com.example.Capstone_BLGH_BE.model.exceptions.*;
 import com.example.Capstone_BLGH_BE.model.payload.UtenteDTO;
@@ -9,12 +10,18 @@ import com.example.Capstone_BLGH_BE.repository.UtenteDAORepository;
 import com.example.Capstone_BLGH_BE.security.JwtUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional
@@ -42,6 +49,8 @@ public class UtenteService {
         //assegnazione ruolo default - in versioni successive includi organizzatore.
         if (dto.getRuolo() == null || dto.getRuolo().equals("USER")) {
             nuovoUtente.setRuolo("USER");
+        } else if (dto.getRuolo().equals("ADMIN")){
+            nuovoUtente.setRuolo("ADMIN");
         } else {
             throw new BadRequestException("Errore. Il valore inserito come ruolo, non è valido.");
         }
@@ -120,12 +129,34 @@ public class UtenteService {
         return "Password modificata correttamente!";
     }
 
+    //Eliminazione dell'utente loggato
     public String deleteLoggedUtente(String username) {
         Utente utenteTrovato = utenteRepo.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("Utente non trovato."));
         utenteRepo.delete(utenteTrovato);
         return "Utente eliminato con successo!";
     }
+
+    //-----------------------------METODI ADMIN---------------------------------
+    //Ritorna lista di tutti gli utenti
+    public Page<UtenteDTO> getAllUtenti(Pageable page) {
+        Page<Utente> listaUtenti = utenteRepo.findAll(page);
+        List<UtenteDTO> listaUtentiDTO = new ArrayList<>();
+        for (Utente u : listaUtenti.getContent()) {
+            UtenteDTO utenteDTO = entity_Dto(u);
+            listaUtentiDTO.add(utenteDTO);
+        }
+        return new PageImpl<>(listaUtentiDTO);
+    }
+
+    //Cancella utente da Id
+    public String deleteUtenteById(long idUtente) {
+        Utente u = utenteRepo.findById(idUtente)
+                .orElseThrow(()-> new NotFoundException("Nessun utente trovato con questo id"));
+        utenteRepo.delete(u);
+        return "Utente con id: " + idUtente +" eliminato con successo";
+    }
+
 
     // -----------------------------TRAVASI DTO----------------------------------
     //Travaso RegistrazioneRequest a Utente

@@ -60,17 +60,7 @@ public class UtenteController {
         return new ResponseEntity<>(messaggio, HttpStatus.OK);
     }
 
-    //ritorna tutti gli eventi
-    @GetMapping(value = "/eventi", produces = "application/json")
-    public ResponseEntity<Page<EventoDTO>> getAllEventi(Pageable page) {
-        Page<EventoDTO> eventi = eventoService.getAllEventi(page);
-        return new ResponseEntity<>(eventi, HttpStatus.OK);
-    }
-    //trova evento da id
-    @GetMapping("/evento/{id}")
-    public EventoDTO getEventoById(@PathVariable long id) {
-        return eventoService.findEventoById(id);
-    }
+
 
     //ritorna tutti gli eventi a cui parteciperà un utente
     //ritorna tutti gli eventi a cui è interessato un utente
