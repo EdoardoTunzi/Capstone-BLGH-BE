@@ -52,6 +52,14 @@ public class UtenteController {
         return new ResponseEntity<>(messaggio, HttpStatus.OK);
     }
 
+    @DeleteMapping("/me")
+    public ResponseEntity<?> deleteLoggedUtente() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        String messaggio = utenteService.deleteLoggedUtente(username);
+        return new ResponseEntity<>(messaggio, HttpStatus.OK);
+    }
+
     //ritorna tutti gli eventi
     @GetMapping(value = "/eventi", produces = "application/json")
     public ResponseEntity<Page<EventoDTO>> getAllEventi(Pageable page) {

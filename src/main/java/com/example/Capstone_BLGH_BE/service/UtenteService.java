@@ -120,6 +120,13 @@ public class UtenteService {
         return "Password modificata correttamente!";
     }
 
+    public String deleteLoggedUtente(String username) {
+        Utente utenteTrovato = utenteRepo.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException("Utente non trovato."));
+        utenteRepo.delete(utenteTrovato);
+        return "Utente eliminato con successo!";
+    }
+
     // -----------------------------TRAVASI DTO----------------------------------
     //Travaso RegistrazioneRequest a Utente
     public Utente registrazioneRequest_Utente(RegistrazioneRequest request) {
