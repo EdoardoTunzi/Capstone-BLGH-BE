@@ -59,6 +59,11 @@ public class AdminController {
 
 
     //Cancella evento
+    @DeleteMapping("/evento/{idEvento}")
+    public ResponseEntity<?> deleteEventoById(@PathVariable Long idEvento) {
+        String messaggio = eventoService.deleteEvento(idEvento);
+        return new ResponseEntity<>(messaggio, HttpStatus.OK);
+    }
 
     //----------Band----------------
     //Crea nuova band
