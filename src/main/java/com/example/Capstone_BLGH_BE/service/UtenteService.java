@@ -5,6 +5,7 @@ import com.example.Capstone_BLGH_BE.model.exceptions.BadRequestException;
 import com.example.Capstone_BLGH_BE.model.exceptions.EmailDuplicateException;
 import com.example.Capstone_BLGH_BE.model.exceptions.NotFoundException;
 import com.example.Capstone_BLGH_BE.model.exceptions.UsernameDuplicateException;
+import com.example.Capstone_BLGH_BE.model.payload.UtenteDTO;
 import com.example.Capstone_BLGH_BE.model.payload.request.RegistrazioneRequest;
 import com.example.Capstone_BLGH_BE.model.payload.response.LoginResponse;
 import com.example.Capstone_BLGH_BE.repository.UtenteDAORepository;
@@ -64,35 +65,52 @@ public class UtenteService {
         }
     }
 
-   //Gestione Login utente
-   public LoginResponse login(String username, String password){
+    //Gestione Login utente
+    public LoginResponse login(String username, String password) {
+        // 1. AUTENTICAZIONE DELL'UTENTE IN FASE DI LOGIN
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        // 2. INSERIMENTO DELL'AUTENTICAZIONE UTENTE NEL CONTESTO DELLA SICUREZZA
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        // 3. RECUPERO RUOLI --> String
+        String ruolo = null;
+        for (Object role : authentication.getAuthorities()) {
+            ruolo = role.toString();
+            break;
+        }
+        // 4. GENERO L'UTENTE
+        Utente user = new Utente();
+        user.setUsername(username);
+        user.setRuolo(ruolo);
+        // 5. GENERO IL TOKEN
+        String token = jwtUtils.creaToken(user);
+        // 6. CREO L'OGGETTO DI RISPOSTA AL CLIENT
+        return new LoginResponse(username, token);
+    }
 
-       // 1. AUTENTICAZIONE DELL'UTENTE IN FASE DI LOGIN
-       Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+    //Ottieni i dati dell'utente loggato
+    public UtenteDTO getUtenteByUsername(String username) {
+        Utente utenteTrovato = utenteRepo.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException("Utente non trovato."));
+        UtenteDTO dto = entity_Dto(utenteTrovato);
+        return dto;
+    }
 
-       // 2. INSERIMENTO DELL'AUTENTICAZIONE UTENTE NEL CONTESTO DELLA SICUREZZA
-       SecurityContextHolder.getContext().setAuthentication(authentication);
+    //Modifica i dati dell'utente loggato(escluso password)
+    public UtenteDTO updateUtenteInfoByUsername(String username, UtenteDTO utenteDTO) {
+        Utente utenteTrovato = utenteRepo.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException("Utente non trovato."));
+        utenteTrovato.setNome(utenteDTO.getNome());
+        utenteTrovato.setCognome(utenteDTO.getCognome());
+        utenteTrovato.setUsername(utenteDTO.getUsername());
+        utenteTrovato.setEmail(utenteDTO.getEmail());
+        utenteTrovato.setAvatar(utenteDTO.getAvatar());
 
-       // 3. RECUPERO RUOLI --> String
-       String ruolo=null;
-       for(Object role :authentication.getAuthorities()){
-           ruolo=role.toString();
-           break;
-       }
+        UtenteDTO dto = entity_Dto(utenteTrovato);
+        return dto;
+    }
 
-       // 4. GENERO L'UTENTE
-       Utente user = new Utente();
-       user.setUsername(username);
-       user.setRuolo(ruolo);
-
-       // 5. GENERO IL TOKEN
-       String token = jwtUtils.creaToken(user);
-
-       // 6. CREO L'OGGETTO DI RISPOSTA AL CLIENT
-       return new LoginResponse(username, token);
-   }
-
-    //travaso RegistrazioneRequest a Utente
+    // -----------------------------TRAVASI DTO----------------------------------
+    //Travaso RegistrazioneRequest a Utente
     public Utente registrazioneRequest_Utente(RegistrazioneRequest request) {
         Utente utente = new Utente();
         utente.setEmail(request.getEmail());
@@ -101,4 +119,17 @@ public class UtenteService {
         utente.setCognome(request.getCognome());
         return utente;
     }
+
+    public UtenteDTO entity_Dto(Utente u) {
+        UtenteDTO dto = new UtenteDTO();
+        dto.setId(u.getId());
+        dto.setNome(u.getNome());
+        dto.setCognome(u.getCognome());
+        dto.setUsername(u.getUsername());
+        dto.setEmail(u.getEmail());
+        dto.setAvatar(u.getAvatar());
+        //password esclusa, gestita in metodo dedicato
+        return dto;
+    }
+
 }
