@@ -41,7 +41,7 @@ public class EventoService {
     }
 
     //Check eventi duplicati
-    public void checkDuplicati(String nome) throws EventDuplicateException {
+    public void checkDuplicati(String nome) {
         if (eventoRepo.existsByNome(nome)) {
             throw new EventDuplicateException("Esiste già un evento con questo nome. Inserisci un nome evento diverso.");
         }

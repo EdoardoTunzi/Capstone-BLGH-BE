@@ -37,7 +37,7 @@ public class UtenteService {
 
 
     //Registrazione nuovo utente
-    public String newUtente(RegistrazioneRequest dto) throws BadRequestException {
+    public String newUtente(RegistrazioneRequest dto) {
         String passwordCodificata = passwordEncoder.encode(dto.getPassword());
         checkDuplicateKey(dto.getUsername(), dto.getEmail());
         Utente nuovoUtente = registrazioneRequest_Utente(dto);
@@ -60,7 +60,7 @@ public class UtenteService {
     }
 
     //Check duplicati email e username
-    public void checkDuplicateKey(String username, String email) throws UsernameDuplicateException, EmailDuplicateException {
+    public void checkDuplicateKey(String username, String email) {
 
         if (utenteRepo.existsByUsername(username)) {
             throw new UsernameDuplicateException("Username già utilizzato, non disponibile");
