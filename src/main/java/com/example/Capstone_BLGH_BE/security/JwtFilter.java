@@ -33,7 +33,7 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
         //Ignora il filtro per la rotta di autenticazione
-        if (path.startsWith("/auth") || path.startsWith("/eventi")) {
+        if (path.startsWith("/auth") || path.startsWith("/eventi") || path.startsWith("/bands")) {
             filterChain.doFilter(request, response);
             return;
         }

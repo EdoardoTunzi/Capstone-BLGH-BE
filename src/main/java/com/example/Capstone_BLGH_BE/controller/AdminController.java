@@ -56,8 +56,6 @@ public class AdminController {
         String messaggio = eventoService.updateEvento(dto, idEvento);
         return new ResponseEntity<>(messaggio, HttpStatus.OK);
     }
-
-
     //Cancella evento
     @DeleteMapping("/evento/{idEvento}")
     public ResponseEntity<?> deleteEventoById(@PathVariable Long idEvento) {
