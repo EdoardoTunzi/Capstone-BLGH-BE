@@ -1,6 +1,5 @@
 package com.example.Capstone_BLGH_BE.model.entities;
 
-import com.example.Capstone_BLGH_BE.model.enumerations.Ruolo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,7 +25,7 @@ public class Utente {
     @Column(nullable = false)
     private String password;
     private String avatar;
-    @Enumerated(EnumType.STRING)
-    private Ruolo ruolo;
+
+    private String ruolo;
 
 }

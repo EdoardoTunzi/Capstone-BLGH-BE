@@ -24,9 +24,33 @@ public class CustomExceptionHandler {
         return  new ResponseEntity<>(apiError, apiError.getStatus());
     }
 
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ApiError> handleUnauthorizedException(UnauthorizedException ex) {
+        ApiError apiError = new ApiError(ex.getMessage(),HttpStatus.UNAUTHORIZED);
+        return  new ResponseEntity<>(apiError, apiError.getStatus());
+    }
+
+    @ExceptionHandler(UsernameDuplicateException.class)
+    public ResponseEntity<ApiError> handleUsernameDuplicateException(UsernameDuplicateException ex) {
+        ApiError apiError = new ApiError(ex.getMessage(),HttpStatus.CONFLICT);
+        return  new ResponseEntity<>(apiError, apiError.getStatus());
+    }
+    @ExceptionHandler(EmailDuplicateException.class)
+    public ResponseEntity<ApiError> handleEmailDuplicateException(EmailDuplicateException ex) {
+        ApiError apiError = new ApiError(ex.getMessage(),HttpStatus.CONFLICT);
+        return  new ResponseEntity<>(apiError, apiError.getStatus());
+    }
+
+    @ExceptionHandler(CreateTokenException.class)
+    public ResponseEntity<ApiError> handleCreateTokenException(CreateTokenException ex) {
+        ApiError apiError = new ApiError(ex.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+        return  new ResponseEntity<>(apiError, apiError.getStatus());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGenericException(Exception ex) {
-        ApiError apiError = new ApiError("Errore interno del server " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        ex.printStackTrace();
+        ApiError apiError = new ApiError("Errore interno del server ", HttpStatus.INTERNAL_SERVER_ERROR);
         return  new ResponseEntity<>(apiError, apiError.getStatus());
     }
 
