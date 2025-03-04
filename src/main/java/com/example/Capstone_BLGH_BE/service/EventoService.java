@@ -32,7 +32,7 @@ public class EventoService {
         checkDuplicati(eventoDTORequest.getNome());
         //Recupero la band da associare all'evento
         Band band = bandRepo.findById(eventoDTORequest.getBandId())
-                .orElseThrow(()-> new NotFoundException("Nessuna Band trovata con id: " + eventoDTORequest.getBandId()));
+                .orElseThrow(() -> new NotFoundException("Nessuna Band trovata con id: " + eventoDTORequest.getBandId()));
 
         Evento nuovoEvento = dtoReq_entity(eventoDTORequest);
         nuovoEvento.setBand(band);
@@ -68,23 +68,22 @@ public class EventoService {
             throw new NotFoundException("Nessun evento trovato con id: " + idEvento);
         }
     }
+
     //modifica completa di evento
-    public String updateEvento(EventoDTO dto, long idEvento) {
-        Optional<Evento> eventoRicercato = eventoRepo.findById(idEvento);
-        if (eventoRicercato.isPresent()) {
-            Evento e = eventoRicercato.get();
-            e.setNome(dto.getNome());
-            e.setDescrizione(dto.getDescrizione());
-            e.setLocation(dto.getLocation());
-            e.setData(dto.getData());
-            e.setOra(dto.getOra());
-            e.setLocandina(dto.getLocandina());
-            e.setBand(dto.getBand());
-            eventoRepo.save(e);
-            return "Evento con id: "+e.getId()+ ", modificato con successo!";
-        } else {
-            throw new NotFoundException("Errore nella modifica. Nessun evento trovato con id: " + idEvento);
-        }
+    public String updateEvento(EventoDTORequest dto, long idEvento) {
+        Evento eventoRicercato = eventoRepo.findById(idEvento)
+                .orElseThrow(() -> new NotFoundException("Evento non trovato"));
+        Band band = bandRepo.findById(dto.getBandId())
+                .orElseThrow(() -> new NotFoundException("Nessuna Band trovata con id: " + dto.getBandId()));
+
+        eventoRicercato.setNome(dto.getNome());
+        eventoRicercato.setDescrizione(dto.getDescrizione());
+        eventoRicercato.setLocation(dto.getLocation());
+        eventoRicercato.setData(dto.getData());
+        eventoRicercato.setOra(dto.getOra());
+        eventoRicercato.setLocandina(dto.getLocandina());
+        eventoRicercato.setBand(band);
+        return "Evento con id: " + eventoRicercato.getId() + ", modificato con successo!";
     }
 
     //Elimina evento

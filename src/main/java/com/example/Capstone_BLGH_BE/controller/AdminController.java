@@ -44,6 +44,19 @@ public class AdminController {
         return new ResponseEntity<>(messaggio, HttpStatus.OK);
     }
     //Modifica evento
+    @PutMapping("/evento/{idEvento}")
+    public ResponseEntity<?> updateEventoById(@Validated @RequestBody EventoDTORequest dto, @PathVariable Long idEvento, BindingResult validazione) {
+        if (validazione.hasErrors()) {
+            StringBuilder errori = new StringBuilder("Problemi nella validazione dati :\n");
+            for (ObjectError errore : validazione.getAllErrors()) {
+                errori.append(errore.getDefaultMessage()).append("\n");
+            }
+            return new ResponseEntity<>(errori.toString(), HttpStatus.BAD_REQUEST);
+        }
+        String messaggio = eventoService.updateEvento(dto, idEvento);
+        return new ResponseEntity<>(messaggio, HttpStatus.OK);
+    }
+
 
     //Cancella evento
 

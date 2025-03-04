@@ -20,13 +20,13 @@ public class EventoController {
     EventoService eventoService;
 
     //ritorna tutti gli eventi
-    @GetMapping(value = "/eventi", produces = "application/json")
+    @GetMapping(value = "", produces = "application/json")
     public ResponseEntity<Page<EventoDTO>> getAllEventi(Pageable page) {
         Page<EventoDTO> eventi = eventoService.getAllEventi(page);
         return new ResponseEntity<>(eventi, HttpStatus.OK);
     }
     //trova evento da id
-    @GetMapping("/evento/{id}")
+    @GetMapping("/{id}")
     public EventoDTO getEventoById(@PathVariable long id) {
         return eventoService.findEventoById(id);
     }
