@@ -1,10 +1,7 @@
 package com.example.Capstone_BLGH_BE.service;
 
 import com.example.Capstone_BLGH_BE.model.entities.Utente;
-import com.example.Capstone_BLGH_BE.model.exceptions.BadRequestException;
-import com.example.Capstone_BLGH_BE.model.exceptions.EmailDuplicateException;
-import com.example.Capstone_BLGH_BE.model.exceptions.NotFoundException;
-import com.example.Capstone_BLGH_BE.model.exceptions.UsernameDuplicateException;
+import com.example.Capstone_BLGH_BE.model.exceptions.*;
 import com.example.Capstone_BLGH_BE.model.payload.UtenteDTO;
 import com.example.Capstone_BLGH_BE.model.payload.request.RegistrazioneRequest;
 import com.example.Capstone_BLGH_BE.model.payload.response.LoginResponse;
@@ -107,6 +104,20 @@ public class UtenteService {
 
         UtenteDTO dto = entity_Dto(utenteTrovato);
         return dto;
+    }
+
+    //Modifica password dell'utente loggato
+    public String updatePasswordUtenteByUsername(String username, String oldPassword, String newPassword) {
+        Utente utenteTrovato = utenteRepo.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException("Utente non trovato."));
+        //confronta la password immessa (oldPassword) con quella criptata memorizzata nel database.
+        if (!passwordEncoder.matches(oldPassword, utenteTrovato.getPassword())) {
+            throw new UnauthorizedException("La password vecchia/attuale che hai inserito non è corretta.");
+        }
+        String nuovaPasswordCodificata = passwordEncoder.encode(newPassword);
+        utenteTrovato.setPassword(nuovaPasswordCodificata);
+
+        return "Password modificata correttamente!";
     }
 
     // -----------------------------TRAVASI DTO----------------------------------

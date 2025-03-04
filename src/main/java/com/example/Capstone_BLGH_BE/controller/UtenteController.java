@@ -3,6 +3,7 @@ package com.example.Capstone_BLGH_BE.controller;
 
 import com.example.Capstone_BLGH_BE.model.payload.EventoDTO;
 import com.example.Capstone_BLGH_BE.model.payload.UtenteDTO;
+import com.example.Capstone_BLGH_BE.model.payload.request.PasswordChangeRequest;
 import com.example.Capstone_BLGH_BE.service.EventoService;
 import com.example.Capstone_BLGH_BE.service.UtenteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,14 @@ public class UtenteController {
         String username = authentication.getName();
         UtenteDTO utenteDTO = utenteService.updateUtenteInfoByUsername(username, dto);
         return new ResponseEntity<>(utenteDTO, HttpStatus.OK);
+    }
+    //modifica password utente loggato
+    @PutMapping("/me/password")
+    public ResponseEntity<?> updateLoggedUtentePassword(@RequestBody PasswordChangeRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        String messaggio = utenteService.updatePasswordUtenteByUsername(username, request.getOldPassword(), request.getNewPassword());
+        return new ResponseEntity<>(messaggio, HttpStatus.OK);
     }
 
     //ritorna tutti gli eventi
