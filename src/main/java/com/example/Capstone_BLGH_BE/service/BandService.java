@@ -24,15 +24,17 @@ public class BandService {
     public String createBand(BandDTO bandDTO) {
         Band nuovaBand = dto_entity(bandDTO);
         Band bandSalvata = bandRepo.save(nuovaBand);
-        return "Band: " + bandSalvata.getNomeBand()+ " , salvata con id: " + bandSalvata.getId();
+        return "Band: " + bandSalvata.getNomeBand() + " , salvata con id: " + bandSalvata.getId();
     }
+
     //find band by id
     public BandDTO findBandById(long idBand) {
         Band bandTrovata = bandRepo.findById(idBand)
-                .orElseThrow(()-> new NotFoundException("Nessuna band trovata con id: " + idBand));
+                .orElseThrow(() -> new NotFoundException("Nessuna band trovata con id: " + idBand));
         BandDTO b = entity_dto(bandTrovata);
         return b;
     }
+
     //find by Nome( ritorna lista di band)
     public List<BandDTO> findBandsByNome(String nome) {
         List<Band> listaBandtrovate = bandRepo.findByNomeBandContainingIgnoreCase(nome);
@@ -44,6 +46,7 @@ public class BandService {
         }
         return listaBandDto;
     }
+
     //get all band
     public Page<BandDTO> getAllBands(Pageable page) {
         Page<Band> listaBands = bandRepo.findAll(page);
@@ -54,6 +57,7 @@ public class BandService {
         }
         return new PageImpl<>(listaBandDto);
     }
+
     //modifica info band
     public String updateBand(BandDTO dto, long idBand) {
         Band bandTrovata = bandRepo.findById(idBand)
@@ -69,10 +73,24 @@ public class BandService {
         bandTrovata.setSpotify(dto.getSpotify());
         bandTrovata.setSoundcloud(dto.getSoundcloud());
         bandTrovata.setYoutube(dto.getYoutube());
-        return "Band con id: " +bandTrovata.getId()+" , modificata con successo.";
+        return "Band con id: " + bandTrovata.getId() + " , modificata con successo.";
     }
-        //modifica fotoBand
+
+    //modifica fotoBand
+    public String updateFotoBandById(long idBand, String urlImg) {
+        Band bandTrovata = bandRepo.findById(idBand)
+                .orElseThrow(() -> new NotFoundException("Band non trovata con questo id"));
+        bandTrovata.setFotoBand(urlImg);
+        return "Immagine della band modificata con successo!";
+    }
+
     //cancella band
+    public String deleteBandById(long idBand) {
+        Band b = bandRepo.findById(idBand)
+                .orElseThrow(() -> new NotFoundException("Nessuna band trovata con questo id"));
+        bandRepo.delete(b);
+        return "Band con id: " + idBand + " eliminata con successo!";
+    }
 
 
     //-----------------------------TRAVASI DTO----------------------------------

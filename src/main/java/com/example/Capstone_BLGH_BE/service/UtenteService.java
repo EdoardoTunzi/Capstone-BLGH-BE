@@ -134,7 +134,7 @@ public class UtenteService {
         Utente utenteTrovato = utenteRepo.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("Utente non trovato."));
         utenteTrovato.setAvatar(urlImg);
-        return "Immagine profilo modificata con successo";
+        return "Immagine profilo modificata con successo!";
     }
 
     //Eliminazione dell'utente loggato

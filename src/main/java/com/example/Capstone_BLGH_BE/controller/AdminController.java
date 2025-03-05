@@ -1,5 +1,7 @@
 package com.example.Capstone_BLGH_BE.controller;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.example.Capstone_BLGH_BE.model.payload.BandDTO;
 import com.example.Capstone_BLGH_BE.model.payload.EventoDTO;
 import com.example.Capstone_BLGH_BE.model.payload.UtenteDTO;
@@ -13,10 +15,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/admin")
@@ -30,7 +38,10 @@ public class AdminController {
     @Autowired
     BandService bandService;
 
-    //---------Eventi---------------
+    @Autowired
+    Cloudinary cloudinaryConfig;
+
+    //---------Gestione Eventi---------------
     //Crea nuovo evento
     @PostMapping("/evento")
     public ResponseEntity<?> createNewEvento(@Validated @RequestBody EventoDTORequest dto, BindingResult validazione) {
@@ -64,7 +75,7 @@ public class AdminController {
         return new ResponseEntity<>(messaggio, HttpStatus.OK);
     }
 
-    //----------Band----------------
+    //----------Gestione Band----------------
     //Crea nuova band
     @PostMapping("/band")
     public ResponseEntity<?> createNewBand(@Validated @RequestBody BandDTO bandDTO, BindingResult validazione) {
@@ -91,8 +102,27 @@ public class AdminController {
         String messaggio = bandService.updateBand(dto, idBand);
         return new ResponseEntity<>(messaggio, HttpStatus.OK);
     }
+    //Modifica foto band da Id
+    @PutMapping("/band/foto/{idBand}")
+    public ResponseEntity<?> updateFotoBandById(@RequestPart("foto")MultipartFile foto, @PathVariable Long idBand) {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Map mappa = cloudinaryConfig.uploader().upload(foto.getBytes(), ObjectUtils.emptyMap());
+            String urlImage = mappa.get("secure_url").toString();
+            String message = bandService.updateFotoBandById(idBand, urlImage);
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        } catch (IOException e) {
+            throw new RuntimeException("Errore nel caricamento dell'immagine. " + e );
+        }
+    }
+    //Delete band da id
+    @DeleteMapping("/band/{idBand}")
+    public ResponseEntity<?> deleteBandById(@PathVariable Long idBand) {
+        String messaggio = bandService.deleteBandById(idBand);
+        return new ResponseEntity<>(messaggio, HttpStatus.OK);
+    }
 
-    //----------Utenti--------------
+    //----------Gestione Utenti--------------
     //Ottiene lista di tutti gli utenti
     @GetMapping(value = "/utenti", produces = "application/json")
     public ResponseEntity<Page<UtenteDTO>> getAllUtenti(Pageable page) {
