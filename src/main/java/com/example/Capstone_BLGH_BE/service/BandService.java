@@ -1,6 +1,7 @@
 package com.example.Capstone_BLGH_BE.service;
 
 import com.example.Capstone_BLGH_BE.model.entities.Band;
+import com.example.Capstone_BLGH_BE.model.exceptions.NotFoundException;
 import com.example.Capstone_BLGH_BE.model.payload.BandDTO;
 import com.example.Capstone_BLGH_BE.repository.BandDAORepository;
 import jakarta.transaction.Transactional;
@@ -25,7 +26,24 @@ public class BandService {
         Band bandSalvata = bandRepo.save(nuovaBand);
         return "Band: " + bandSalvata.getNomeBand()+ " , salvata con id: " + bandSalvata.getId();
     }
-    //get band by id
+    //find band by id
+    public BandDTO findBandById(long idBand) {
+        Band bandTrovata = bandRepo.findById(idBand)
+                .orElseThrow(()-> new NotFoundException("Nessuna band trovata con id: " + idBand));
+        BandDTO b = entity_dto(bandTrovata);
+        return b;
+    }
+    //find by Nome( ritorna lista di band)
+    public List<BandDTO> findBandsByNome(String nome) {
+        List<Band> listaBandtrovate = bandRepo.findByNomeBandContainingIgnoreCase(nome);
+        List<BandDTO> listaBandDto = new ArrayList<>();
+
+        for (Band b : listaBandtrovate) {
+            BandDTO dto = entity_dto(b);
+            listaBandDto.add(dto);
+        }
+        return listaBandDto;
+    }
     //get all band
     public Page<BandDTO> getAllBands(Pageable page) {
         Page<Band> listaBands = bandRepo.findAll(page);
@@ -37,7 +55,23 @@ public class BandService {
         return new PageImpl<>(listaBandDto);
     }
     //modifica info band
-    //modifica fotoBand
+    public String updateBand(BandDTO dto, long idBand) {
+        Band bandTrovata = bandRepo.findById(idBand)
+                .orElseThrow(() -> new NotFoundException("Nessuna Band trovata con id: " + idBand));
+
+        bandTrovata.setNomeBand(dto.getNomeBand());
+        bandTrovata.setBio(dto.getBio());
+        bandTrovata.setGenereMusicale(dto.getGenereMusicale());
+        bandTrovata.setFotoBand(dto.getFotoBand());
+        bandTrovata.setSitoWeb(dto.getSitoWeb());
+        bandTrovata.setInstagram(dto.getInstagram());
+        bandTrovata.setFacebook(dto.getFacebook());
+        bandTrovata.setSpotify(dto.getSpotify());
+        bandTrovata.setSoundcloud(dto.getSoundcloud());
+        bandTrovata.setYoutube(dto.getYoutube());
+        return "Band con id: " +bandTrovata.getId()+" , modificata con successo.";
+    }
+        //modifica fotoBand
     //cancella band
 
 

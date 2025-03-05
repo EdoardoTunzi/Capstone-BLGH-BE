@@ -7,6 +7,7 @@ import com.example.Capstone_BLGH_BE.model.payload.request.EventoDTORequest;
 import com.example.Capstone_BLGH_BE.service.BandService;
 import com.example.Capstone_BLGH_BE.service.EventoService;
 import com.example.Capstone_BLGH_BE.service.UtenteService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -75,6 +76,19 @@ public class AdminController {
             return new ResponseEntity<>(errori.toString(), HttpStatus.BAD_REQUEST);
         }
         String messaggio = bandService.createBand(bandDTO);
+        return new ResponseEntity<>(messaggio, HttpStatus.OK);
+    }
+    //Modifica Band
+    @PutMapping("/band/{idBand}")
+    public ResponseEntity<?> updateBandById(@Validated @RequestBody BandDTO dto, @PathVariable Long idBand, BindingResult validazione) {
+        if (validazione.hasErrors()) {
+            StringBuilder errori = new StringBuilder("Problemi nella validazione dati :\n");
+            for (ObjectError errore : validazione.getAllErrors()) {
+                errori.append(errore.getDefaultMessage()).append("\n");
+            }
+            return new ResponseEntity<>(errori.toString(), HttpStatus.BAD_REQUEST);
+        }
+        String messaggio = bandService.updateBand(dto, idBand);
         return new ResponseEntity<>(messaggio, HttpStatus.OK);
     }
 
