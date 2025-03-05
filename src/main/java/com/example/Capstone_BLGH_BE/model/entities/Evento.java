@@ -29,6 +29,9 @@ public class Evento {
     private String descrizione;
     @Column(nullable = false)
     private String locandina;
+    @Column(nullable = false)
+    private String prezzoIngresso;
+    private String urlEvento;
     @ManyToOne
     @JoinColumn(name = "band_id")
     private Band band;

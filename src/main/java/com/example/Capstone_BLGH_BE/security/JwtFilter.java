@@ -32,7 +32,7 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
-        //Ignora il filtro per la rotta di autenticazione
+        //Ignora il filtro per le rotte permitAll()
         if (path.startsWith("/auth") || path.startsWith("/eventi") || path.startsWith("/bands")) {
             filterChain.doFilter(request, response);
             return;
@@ -54,7 +54,6 @@ public class JwtFilter extends OncePerRequestFilter {
                 // 5. INSERIMENTO NEL CONTESTO DI SICUREZZA
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
-
         } catch (CreateTokenException ex) {
             filterChain.doFilter(request, response);
             return;
@@ -67,7 +66,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
             ObjectMapper mapper = new ObjectMapper();
             mapper.writeValue(response.getWriter(), errorDetails);
-
         }
         filterChain.doFilter(request, response);
     }

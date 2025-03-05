@@ -34,6 +34,12 @@ public class EventoDTORequest {
     @URL(message = "Inserisci un URL valido per la locandina dell'evento")
     private String locandina;
 
+    @NotBlank(message = "Il prezzo di ingresso è obbligatorio")
+    private String prezzoIngresso;
+
+    @URL(message = "Inserisci un URL valido per la pagina dell'evento")
+    private String urlEvento;
+
     @NotNull(message = "L'evento deve avere una band/artista associato)")
     private long bandId;
 }

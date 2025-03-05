@@ -121,6 +121,8 @@ public class EventoService {
         e.setData(dto.getData());
         e.setOra(dto.getOra());
         e.setLocandina(dto.getLocandina());
+        e.setPrezzoIngresso(dto.getPrezzoIngresso());
+        e.setUrlEvento(dto.getUrlEvento());
         return e;
     }
 
@@ -133,6 +135,8 @@ public class EventoService {
         dto.setOra(e.getOra());
         dto.setLocandina(e.getLocandina());
         dto.setBand(e.getBand());
+        dto.setPrezzoIngresso(e.getPrezzoIngresso());
+        dto.setUrlEvento(e.getUrlEvento());
         return dto;
     }
 }
