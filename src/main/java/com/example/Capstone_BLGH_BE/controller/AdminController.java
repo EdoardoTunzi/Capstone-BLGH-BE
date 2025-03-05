@@ -74,6 +74,7 @@ public class AdminController {
         String messaggio = eventoService.deleteEvento(idEvento);
         return new ResponseEntity<>(messaggio, HttpStatus.OK);
     }
+    //modifica fot evento
 
     //----------Gestione Band----------------
     //Crea nuova band

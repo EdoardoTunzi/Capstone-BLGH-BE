@@ -97,7 +97,18 @@ public class EventoService {
         }
     }
 
+    //checkDate( metodo per controllare che la data dell'evento sia uguale ad oggi o nel futuro)
+    //oppure query custom per ritornare eventi where data is >= localdate.now - da inserire nel get all eventi
+
+
     //Get all eventi di una band
+    //get all eventi in programma(presenti o futuri) di una band
+    //get eventi per band, data, location(/filtro? genere=rock&data=2024-05-01&location=StorieDelVecchioSud
+    // get eventi in un periodo da/a
+    //---stats---
+    //EVENTI MOST POPULAR - get eventi con più partecipazioni(stato parteciperò)
+    //get eventi
+
 
     //---------------------Travasi DTO----------------------------
 
