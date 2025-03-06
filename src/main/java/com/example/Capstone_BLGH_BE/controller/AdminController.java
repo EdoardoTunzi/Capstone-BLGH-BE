@@ -116,7 +116,7 @@ public class AdminController {
             throw new RuntimeException("Errore nel caricamento dell'immagine. " + e );
         }
     }
-    //Delete band da id
+    //Cancella band da id
     @DeleteMapping("/band/{idBand}")
     public ResponseEntity<?> deleteBandById(@PathVariable Long idBand) {
         String messaggio = bandService.deleteBandById(idBand);

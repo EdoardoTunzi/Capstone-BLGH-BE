@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -47,9 +48,10 @@ public class EventoService {
         }
     }
 
-    //GetAll - Ritorna tutti gli eventi - paginati
+    //GetAll - Ritorna tutti gli eventi - paginati, esclude quelli passati e li ordina dal piu recente
     public Page<EventoDTO> getAllEventi(Pageable page) {
-        Page<Evento> listaEventi = eventoRepo.findAll(page);
+        LocalDate oggi = LocalDate.now();
+        Page<Evento> listaEventi = eventoRepo.findByDataGreaterThanEqualOrderByDataAsc(oggi, page);
         List<EventoDTO> listaEventiDTO = new ArrayList<>();
         for (Evento e : listaEventi.getContent()) {
             EventoDTO eventoDTO = entity_dto(e);
@@ -101,7 +103,7 @@ public class EventoService {
     //oppure query custom per ritornare eventi where data is >= localdate.now - da inserire nel get all eventi
 
 
-    //Get all eventi di una band
+    //Get all eventi di una band by nome
     //get all eventi in programma(presenti o futuri) di una band
     //get eventi per band, data, location(/filtro? genere=rock&data=2024-05-01&location=StorieDelVecchioSud
     // get eventi in un periodo da/a
@@ -139,6 +141,7 @@ public class EventoService {
 
     public EventoDTO entity_dto(Evento e) {
         EventoDTO dto = new EventoDTO();
+        dto.setId(e.getId());
         dto.setNome(e.getNome());
         dto.setDescrizione(e.getDescrizione());
         dto.setLocation(e.getLocation());
