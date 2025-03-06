@@ -35,15 +35,12 @@ public class UtenteController {
     UtenteService utenteService;
 
     @Autowired
-    EventoService eventoService;
-
-    @Autowired
     PartecipazioneService partecipazioneService;
 
     @Autowired
     Cloudinary cloudinaryConfig;
 
-    //ritorna i dati dell'utente loggato
+    //Ritorna i dati dell'utente loggato
     @GetMapping("/me")
     public ResponseEntity<UtenteDTO> getLoggedUtenteInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -52,7 +49,7 @@ public class UtenteController {
         return new ResponseEntity<>(utenteDTO, HttpStatus.OK);
     }
 
-    //modifica i dati dell'utente loggato(escluso modifica password)
+    //Modifica i dati dell'utente loggato(escluso modifica password)
     @PutMapping("/me")
     public ResponseEntity<UtenteDTO> updateLoggedUtenteInfo(@RequestBody UtenteDTO dto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -61,7 +58,7 @@ public class UtenteController {
         return new ResponseEntity<>(utenteDTO, HttpStatus.OK);
     }
 
-    //modifica password utente loggato
+    //Modifica password utente loggato
     @PutMapping("/me/password")
     public ResponseEntity<?> updateLoggedUtentePassword(@RequestBody PasswordChangeRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -70,6 +67,7 @@ public class UtenteController {
         return new ResponseEntity<>(messaggio, HttpStatus.OK);
     }
 
+    //Modifica img profilo(avatar) di utente loggato
     @PutMapping("/me/avatar")
     public ResponseEntity<?> updateLoggedUtenteAvatar(@RequestPart("avatar") MultipartFile avatar) {
         try {
@@ -84,6 +82,7 @@ public class UtenteController {
         }
     }
 
+    //Eliminazione profilo di un utente loggato
     @DeleteMapping("/me")
     public ResponseEntity<?> deleteLoggedUtente() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -92,10 +91,10 @@ public class UtenteController {
         return new ResponseEntity<>(messaggio, HttpStatus.OK);
     }
 
-    //-----------------Partecipazioni---------------
+    //-----------------------------PARTECIPAZIONI---------------------------------
 
-    //get partecipazioni utente loggato per statoPartecipazione
-    //questo metodo ritorna anche le info complete dell'evento collegato, ordinati per data evento DESC
+    //Get partecipazioni utente loggato per statoPartecipazione
+    //Questo metodo ritorna anche le info complete dell'evento collegato, ordinati per data evento DESC
     //esempio user/partecipazioni?stato=PARTECIPERO
     @GetMapping("/partecipazioni")
     public ResponseEntity<Page<PartecipazioneDTOResponse>> getPartecipazioniUtenteByStato(@RequestParam StatoPartecipazione stato, Pageable page) {
@@ -105,7 +104,7 @@ public class UtenteController {
         return new ResponseEntity<>(partecipazioni, HttpStatus.OK);
     }
 
-    //crea partecipazione
+    //Crea partecipazione(decidi se modificare endpoint aggiungendo ide evento invece di dto)
     @PostMapping("/partecipazione")
     public ResponseEntity<?> createNewPartecipazione(@Validated @RequestBody PartecipazioneDTORequest dtoRequest, BindingResult validazione) {
         if (validazione.hasErrors()) {
@@ -122,7 +121,7 @@ public class UtenteController {
         return new ResponseEntity<>(messaggio, HttpStatus.OK);
     }
 
-    //modifica stato partecipazione
+    //Modifica stato partecipazione
     //PUT - esempio: /user/partecipazione/5?stato=PARTECIPERO
     @PutMapping("/partecipazione/{idPartecipazione}")
     public ResponseEntity<?> updatePartecipazione(@PathVariable Long idPartecipazione, @RequestParam StatoPartecipazione stato) {
@@ -132,11 +131,12 @@ public class UtenteController {
         return new ResponseEntity<>(messaggio, HttpStatus.OK);
     }
 
+    //Delete partecipazione
+    @DeleteMapping("/partecipazione/{idPartecipazione}")
+    public ResponseEntity<?> deletePartecipazione(@PathVariable Long idPartecipazione) {
+        String messaggio = partecipazioneService.deletePartecipazione(idPartecipazione);
+        return new ResponseEntity<>(messaggio, HttpStatus.OK);
+    }
 
-                        //altri metodi delle partecipazioni:
-    //ritorna tutti gli eventi a cui parteciperà un utente
-    //ritorna tutti gli eventi a cui è interessato un utente
-    //ritorna tutti eventi a cui ha partecipato( dove partecipazione = parteciperò e data < a localdate.now)
-    //aggiungi/crea partecipazione utente a evento e setta partecipazione da parametri
 
 }

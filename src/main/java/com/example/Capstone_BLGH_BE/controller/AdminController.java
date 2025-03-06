@@ -3,13 +3,11 @@ package com.example.Capstone_BLGH_BE.controller;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.example.Capstone_BLGH_BE.model.payload.BandDTO;
-import com.example.Capstone_BLGH_BE.model.payload.EventoDTO;
 import com.example.Capstone_BLGH_BE.model.payload.UtenteDTO;
 import com.example.Capstone_BLGH_BE.model.payload.request.EventoDTORequest;
 import com.example.Capstone_BLGH_BE.service.BandService;
 import com.example.Capstone_BLGH_BE.service.EventoService;
 import com.example.Capstone_BLGH_BE.service.UtenteService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,7 +39,7 @@ public class AdminController {
     @Autowired
     Cloudinary cloudinaryConfig;
 
-    //---------Gestione Eventi---------------
+    //-----------------------------GESTIONE EVENTI-------------------------------
     //Crea nuovo evento
     @PostMapping("/evento")
     public ResponseEntity<?> createNewEvento(@Validated @RequestBody EventoDTORequest dto, BindingResult validazione) {
@@ -76,7 +74,7 @@ public class AdminController {
     }
     //modifica fot evento
 
-    //----------Gestione Band----------------
+    //-----------------------------GESTIONE BAND---------------------------------
     //Crea nuova band
     @PostMapping("/band")
     public ResponseEntity<?> createNewBand(@Validated @RequestBody BandDTO bandDTO, BindingResult validazione) {
@@ -123,7 +121,7 @@ public class AdminController {
         return new ResponseEntity<>(messaggio, HttpStatus.OK);
     }
 
-    //----------Gestione Utenti--------------
+    //-----------------------------GESTIONE UTENTI---------------------------------
     //Ottiene lista di tutti gli utenti
     @GetMapping(value = "/utenti", produces = "application/json")
     public ResponseEntity<Page<UtenteDTO>> getAllUtenti(Pageable page) {

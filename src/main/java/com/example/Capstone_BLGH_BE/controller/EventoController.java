@@ -60,7 +60,7 @@ public class EventoController {
         return new ResponseEntity<>(lista, HttpStatus.OK);
     }
 
-    // Endpoint per ottenere 10 most popular eventi con più partecipazioni
+    // Endpoint per ottenere 10 most popular eventi(con più partecipazioni)
     @GetMapping("/top")
     public ResponseEntity<Page<EventoDTO>> getTopEventiByPartecipazioni(
             @RequestParam(defaultValue = "0") int page,

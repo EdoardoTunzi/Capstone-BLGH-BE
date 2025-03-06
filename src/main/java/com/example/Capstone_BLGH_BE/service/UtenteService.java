@@ -35,7 +35,7 @@ public class UtenteService {
     @Autowired
     JwtUtils jwtUtils;
 
-
+    //-----------------------------METODI PUBLIC---------------------------------
     //Registrazione nuovo utente
     public String newUtente(RegistrazioneRequest dto) {
         String passwordCodificata = passwordEncoder.encode(dto.getPassword());
@@ -100,6 +100,7 @@ public class UtenteService {
         UtenteDTO dto = entity_Dto(utenteTrovato);
         return dto;
     }
+    //-----------------------------METODI UTENTE LOGGATO---------------------------------
 
     //Modifica i dati dell'utente loggato(escluso password)
     public UtenteDTO updateUtenteInfoByUsername(String username, UtenteDTO utenteDTO) {

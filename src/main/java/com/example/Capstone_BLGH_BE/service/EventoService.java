@@ -29,25 +29,7 @@ public class EventoService {
     @Autowired
     PartecipazioneDAORepository partecipazioneRepo;
 
-    //Crea nuovo evento
-    public String createEvento(EventoDTORequest eventoDTORequest) {
-        checkDuplicati(eventoDTORequest.getNome());
-        //Recupero la band da associare all'evento
-        Band band = bandRepo.findById(eventoDTORequest.getBandId())
-                .orElseThrow(() -> new NotFoundException("Nessuna Band trovata con id: " + eventoDTORequest.getBandId()));
-
-        Evento nuovoEvento = dtoReq_entity(eventoDTORequest);
-        nuovoEvento.setBand(band);
-        Evento eventoSalvato = eventoRepo.save(nuovoEvento);
-        return "Evento: " + nuovoEvento.getNome() + " ,salvato con Id: " + eventoSalvato.getId();
-    }
-
-    //Check eventi duplicati
-    public void checkDuplicati(String nome) {
-        if (eventoRepo.existsByNome(nome)) {
-            throw new EventDuplicateException("Esiste già un evento con questo nome. Inserisci un nome evento diverso.");
-        }
-    }
+    //-----------------------------METODI PUBLIC---------------------------------
 
     //GetAll - Ritorna tutti gli eventi - paginati, esclude quelli passati e li ordina dal piu recente
     public Page<EventoDTO> getAllEventi(Pageable page) {
@@ -56,7 +38,7 @@ public class EventoService {
         return convertToDtoList(listaEventi);
     }
 
-    // Trova evento da ID
+    // Trova evento da ID e ritorna i dettagli
     public EventoDTO findEventoById(long idEvento) {
         Optional<Evento> eventoRicercato = eventoRepo.findById(idEvento);
         if (eventoRicercato.isPresent()) {
@@ -64,34 +46,6 @@ public class EventoService {
             return e;
         } else {
             throw new NotFoundException("Nessun evento trovato con id: " + idEvento);
-        }
-    }
-
-    //modifica completa di evento
-    public String updateEvento(EventoDTORequest dto, long idEvento) {
-        Evento eventoRicercato = eventoRepo.findById(idEvento)
-                .orElseThrow(() -> new NotFoundException("Evento non trovato"));
-        Band band = bandRepo.findById(dto.getBandId())
-                .orElseThrow(() -> new NotFoundException("Nessuna Band trovata con id: " + dto.getBandId()));
-
-        eventoRicercato.setNome(dto.getNome());
-        eventoRicercato.setDescrizione(dto.getDescrizione());
-        eventoRicercato.setLocation(dto.getLocation());
-        eventoRicercato.setData(dto.getData());
-        eventoRicercato.setOra(dto.getOra());
-        eventoRicercato.setLocandina(dto.getLocandina());
-        eventoRicercato.setBand(band);
-        return "Evento con id: " + eventoRicercato.getId() + ", modificato con successo!";
-    }
-
-    //Elimina evento
-    public String deleteEvento(long idEvento) {
-        Optional<Evento> eventoRicercato = eventoRepo.findById(idEvento);
-        if (eventoRicercato.isPresent()) {
-            eventoRepo.delete(eventoRicercato.get());
-            return "Evento con id: " + idEvento + " eliminato con successo!";
-        } else {
-            throw new NotFoundException("Errore nel delete! Nessun evento trovato con id: " + idEvento);
         }
     }
 
@@ -115,8 +69,6 @@ public class EventoService {
         return convertToDtoList(eventi);
     }
 
-
-    //------METODO PER STATS ADMIN E MOST POPULAR IN HP EVENTI------
     //EVENTI MOST POPULAR - get eventi con più partecipazioni(stato parteciperò)
     public Page<EventoDTO> getTopEventiByPartecipazioni(Pageable page) {
         Page<Object[]> results = partecipazioneRepo.findTopEventiByPartecipazioni(page);
@@ -130,19 +82,56 @@ public class EventoService {
         return new PageImpl<>(listaEventiDTO);
     }
 
-    //---------------------Travasi DTO----------------------------
-
-    public Evento dto_entity(EventoDTO dto) {
-        Evento e = new Evento();
-        e.setNome(dto.getNome());
-        e.setDescrizione(dto.getDescrizione());
-        e.setLocation(dto.getLocation());
-        e.setData(dto.getData());
-        e.setOra(dto.getOra());
-        e.setLocandina(dto.getLocandina());
-        e.setBand(dto.getBand());
-        return e;
+    //-----------------------------METODI ADMIN---------------------------------
+    //Elimina evento
+    public String deleteEvento(long idEvento) {
+        Optional<Evento> eventoRicercato = eventoRepo.findById(idEvento);
+        if (eventoRicercato.isPresent()) {
+            eventoRepo.delete(eventoRicercato.get());
+            return "Evento con id: " + idEvento + " eliminato con successo!";
+        } else {
+            throw new NotFoundException("Errore nel delete! Nessun evento trovato con id: " + idEvento);
+        }
     }
+
+    //Crea nuovo evento
+    public String createEvento(EventoDTORequest eventoDTORequest) {
+        checkDuplicati(eventoDTORequest.getNome());
+        //Recupero la band da associare all'evento
+        Band band = bandRepo.findById(eventoDTORequest.getBandId())
+                .orElseThrow(() -> new NotFoundException("Nessuna Band trovata con id: " + eventoDTORequest.getBandId()));
+
+        Evento nuovoEvento = dtoReq_entity(eventoDTORequest);
+        nuovoEvento.setBand(band);
+        Evento eventoSalvato = eventoRepo.save(nuovoEvento);
+        return "Evento: " + nuovoEvento.getNome() + " ,salvato con Id: " + eventoSalvato.getId();
+    }
+
+    //Check eventi duplicati
+    public void checkDuplicati(String nome) {
+        if (eventoRepo.existsByNome(nome)) {
+            throw new EventDuplicateException("Esiste già un evento con questo nome. Inserisci un nome evento diverso.");
+        }
+    }
+
+    //modifica completa di evento
+    public String updateEvento(EventoDTORequest dto, long idEvento) {
+        Evento eventoRicercato = eventoRepo.findById(idEvento)
+                .orElseThrow(() -> new NotFoundException("Evento non trovato"));
+        Band band = bandRepo.findById(dto.getBandId())
+                .orElseThrow(() -> new NotFoundException("Nessuna Band trovata con id: " + dto.getBandId()));
+
+        eventoRicercato.setNome(dto.getNome());
+        eventoRicercato.setDescrizione(dto.getDescrizione());
+        eventoRicercato.setLocation(dto.getLocation());
+        eventoRicercato.setData(dto.getData());
+        eventoRicercato.setOra(dto.getOra());
+        eventoRicercato.setLocandina(dto.getLocandina());
+        eventoRicercato.setBand(band);
+        return "Evento con id: " + eventoRicercato.getId() + ", modificato con successo!";
+    }
+
+    //---------------------Travasi DTO----------------------------
 
     public Evento dtoReq_entity(EventoDTORequest dto) {
         Evento e = new Evento();
@@ -171,8 +160,8 @@ public class EventoService {
         dto.setUrlEvento(e.getUrlEvento());
         return dto;
     }
-
-    //Avendo riutilizzato più volte il codice in questione ho preferito creare una funzione dedicata per evitare troppe ripetizioni
+    //Avendo riutilizzato più volte il codice in questione
+    //ho preferito creare una funzione dedicata per evitare troppe ripetizioni.
     public Page<EventoDTO> convertToDtoList(Page<Evento> eventi) {
         List<EventoDTO> listaEventiDTO = new ArrayList<>();
         for (Evento e : eventi.getContent()) {

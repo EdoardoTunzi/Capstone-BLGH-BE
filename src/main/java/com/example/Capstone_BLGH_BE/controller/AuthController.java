@@ -24,6 +24,7 @@ public class AuthController {
     @Autowired
     UtenteService utenteService;
 
+    //REGISTRAZIONE
     @PostMapping("/signup")
     public ResponseEntity<String> signUp(@Validated @RequestBody RegistrazioneRequest nuovoUtente, BindingResult validazione) {
 
@@ -41,7 +42,7 @@ public class AuthController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-
+    //LOGIN
     @PostMapping("/login")
     public ResponseEntity<?> login(@Validated @RequestBody LoginRequest loginDTO, BindingResult checkValidazione) {
 

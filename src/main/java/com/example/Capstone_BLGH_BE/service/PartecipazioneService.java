@@ -32,9 +32,9 @@ public class PartecipazioneService {
 
     @Autowired
     UtenteDAORepository utenteRepo;
+    //-----------------------------METODI UTENTE LOGGATO---------------------------------
 
-
-    //get partecipazioni utente loggato per statoPartecipazione
+    //Get partecipazioni di un utente loggato per statoPartecipazione
     // (parteciperò, partecipato, mi interessa)
     public Page<PartecipazioneDTOResponse> getPartecipazioniUtenteByStato(String username, StatoPartecipazione stato, Pageable page) {
         Utente utente = utenteRepo.findByUsername(username)
@@ -48,7 +48,7 @@ public class PartecipazioneService {
         return new PageImpl<>(listaDTO);
     }
 
-    //crea partecipazione
+    //Crea partecipazione
     public String createPartecipazione(String username, PartecipazioneDTORequest dtoRequest) {
         Utente utente = utenteRepo.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("Utente non trovato"));
@@ -66,7 +66,7 @@ public class PartecipazioneService {
         return "Partecipazione salvata con successo, con id: " + partecipazioneSalvata.getId();
     }
 
-    //modifica stato partecipazione
+    //Modifica stato partecipazione
     public String updateStatoPartecipazione(long idPartecipazione, StatoPartecipazione nuovoStato, String username) {
         Partecipazione partecipazioneTrovata = partecipazioneRepo.findById(idPartecipazione)
                 .orElseThrow(() -> new NotFoundException("Partecipazione non trovata"));
@@ -80,8 +80,13 @@ public class PartecipazioneService {
         return "Stato della partecipazione aggiornato a: " + nuovoStato;
     }
 
-    //delete partecipazione da idEvento
-
+    //Delete partecipazione a evento da idEvento
+    public String deletePartecipazione(long idPartecipazione) {
+        Partecipazione partecipazione = partecipazioneRepo.findById(idPartecipazione)
+                .orElseThrow(()-> new NotFoundException("Partecipazione non trovata"));
+        partecipazioneRepo.delete(partecipazione);
+        return "Partecipazione eliminata con successo!";
+    }
 
     // -----------------------------TRAVASI DTO----------------------------------
     public PartecipazioneDTOResponse entity_Dto(Partecipazione p) {

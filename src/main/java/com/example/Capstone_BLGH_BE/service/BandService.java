@@ -20,14 +20,9 @@ public class BandService {
     @Autowired
     BandDAORepository bandRepo;
 
-    //Crea nuova band
-    public String createBand(BandDTO bandDTO) {
-        Band nuovaBand = dto_entity(bandDTO);
-        Band bandSalvata = bandRepo.save(nuovaBand);
-        return "Band: " + bandSalvata.getNomeBand() + " , salvata con id: " + bandSalvata.getId();
-    }
 
-    //find band by id
+    //-----------------------------METODI PUBLIC---------------------------------
+    //Find band by id
     public BandDTO findBandById(long idBand) {
         Band bandTrovata = bandRepo.findById(idBand)
                 .orElseThrow(() -> new NotFoundException("Nessuna band trovata con id: " + idBand));
@@ -35,7 +30,7 @@ public class BandService {
         return b;
     }
 
-    //find by Nome( ritorna lista di band)
+    //Find band by Nome(anche parziale, ritorna lista di band)
     public List<BandDTO> findBandsByNome(String nome) {
         List<Band> listaBandtrovate = bandRepo.findByNomeBandContainingIgnoreCase(nome);
         List<BandDTO> listaBandDto = new ArrayList<>();
@@ -47,7 +42,7 @@ public class BandService {
         return listaBandDto;
     }
 
-    //get all band
+    //Get all band
     public Page<BandDTO> getAllBands(Pageable page) {
         Page<Band> listaBands = bandRepo.findAll(page);
         List<BandDTO> listaBandDto = new ArrayList<>();
@@ -58,7 +53,15 @@ public class BandService {
         return new PageImpl<>(listaBandDto);
     }
 
-    //modifica info band
+    //-----------------------------METODI ADMIN---------------------------------
+    //Crea nuova band
+    public String createBand(BandDTO bandDTO) {
+        Band nuovaBand = dto_entity(bandDTO);
+        Band bandSalvata = bandRepo.save(nuovaBand);
+        return "Band: " + bandSalvata.getNomeBand() + " , salvata con id: " + bandSalvata.getId();
+    }
+
+    //Modifica info band
     public String updateBand(BandDTO dto, long idBand) {
         Band bandTrovata = bandRepo.findById(idBand)
                 .orElseThrow(() -> new NotFoundException("Nessuna Band trovata con id: " + idBand));
@@ -76,7 +79,7 @@ public class BandService {
         return "Band con id: " + bandTrovata.getId() + " , modificata con successo.";
     }
 
-    //modifica fotoBand
+    //Modifica fotoBand
     public String updateFotoBandById(long idBand, String urlImg) {
         Band bandTrovata = bandRepo.findById(idBand)
                 .orElseThrow(() -> new NotFoundException("Band non trovata con questo id"));
@@ -84,7 +87,7 @@ public class BandService {
         return "Immagine della band modificata con successo!";
     }
 
-    //cancella band
+    //Cancella band
     public String deleteBandById(long idBand) {
         Band b = bandRepo.findById(idBand)
                 .orElseThrow(() -> new NotFoundException("Nessuna band trovata con questo id"));
