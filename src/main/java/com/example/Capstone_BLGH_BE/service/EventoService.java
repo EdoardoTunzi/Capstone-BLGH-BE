@@ -52,12 +52,7 @@ public class EventoService {
     public Page<EventoDTO> getAllEventi(Pageable page) {
         LocalDate oggi = LocalDate.now();
         Page<Evento> listaEventi = eventoRepo.findByDataGreaterThanEqualOrderByDataAsc(oggi, page);
-        List<EventoDTO> listaEventiDTO = new ArrayList<>();
-        for (Evento e : listaEventi.getContent()) {
-            EventoDTO eventoDTO = entity_dto(e);
-            listaEventiDTO.add(eventoDTO);
-        }
-        return new PageImpl<>(listaEventiDTO);
+        return convertToDtoList(listaEventi);
     }
 
     // Trova evento da ID
@@ -99,17 +94,29 @@ public class EventoService {
         }
     }
 
-    //checkDate( metodo per controllare che la data dell'evento sia uguale ad oggi o nel futuro)
-    //oppure query custom per ritornare eventi where data is >= localdate.now - da inserire nel get all eventi
+    //Get all eventi filtrati per data specifica
+    public Page<EventoDTO> getEventiByData(LocalDate data, Pageable page) {
+        Page<Evento> eventi = eventoRepo.findByDataOrderByDataAsc(data, page);
+        return convertToDtoList(eventi);
+    }
+
+    // Get all eventi filtrati per nome band
+    public Page<EventoDTO> getEventiByNomeBand(String nomeBand, Pageable page) {
+        LocalDate oggi = LocalDate.now();
+        Page<Evento> eventi = eventoRepo.findByBandNomeBandContainingIgnoreCaseAndDataGreaterThanEqualOrderByDataAsc(nomeBand, oggi, page);
+        return convertToDtoList(eventi);
+    }
+
+    // Get all eventi filtrati per location
+    public Page<EventoDTO> getEventiByLocation(String location, Pageable page) {
+        LocalDate oggi = LocalDate.now();
+        Page<Evento> eventi = eventoRepo.findByLocationContainingIgnoreCaseAndDataGreaterThanEqualOrderByDataDesc(location, oggi, page);
+        return convertToDtoList(eventi);
+    }
 
 
-    //Get all eventi di una band by nome
-    //get all eventi in programma(presenti o futuri) di una band
-    //get eventi per band, data, location(/filtro? genere=rock&data=2024-05-01&location=StorieDelVecchioSud
-    // get eventi in un periodo da/a
-    //---stats---
+    //------METODO PER STATS ADMIN E MOST POPULAR IN HP EVENTI------
     //EVENTI MOST POPULAR - get eventi con più partecipazioni(stato parteciperò)
-    //get eventi
 
 
     //---------------------Travasi DTO----------------------------
@@ -152,5 +159,14 @@ public class EventoService {
         dto.setPrezzoIngresso(e.getPrezzoIngresso());
         dto.setUrlEvento(e.getUrlEvento());
         return dto;
+    }
+    //Avendo riutilizzato più volte il codice in questione ho preferito creare una funzione dedicata per evitare troppe ripetizioni
+    public Page<EventoDTO> convertToDtoList(Page<Evento> eventi) {
+        List<EventoDTO> listaEventiDTO = new ArrayList<>();
+        for (Evento e : eventi.getContent()) {
+            EventoDTO eventoDTO = entity_dto(e);
+            listaEventiDTO.add(eventoDTO);
+        }
+        return new PageImpl<>(listaEventiDTO);
     }
 }
