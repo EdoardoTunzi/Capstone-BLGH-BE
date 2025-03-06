@@ -8,11 +8,10 @@ import com.example.Capstone_BLGH_BE.model.payload.EventoDTO;
 import com.example.Capstone_BLGH_BE.model.payload.request.EventoDTORequest;
 import com.example.Capstone_BLGH_BE.repository.BandDAORepository;
 import com.example.Capstone_BLGH_BE.repository.EventoDAORepository;
+import com.example.Capstone_BLGH_BE.repository.PartecipazioneDAORepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -27,6 +26,8 @@ public class EventoService {
     EventoDAORepository eventoRepo;
     @Autowired
     BandDAORepository bandRepo;
+    @Autowired
+    PartecipazioneDAORepository partecipazioneRepo;
 
     //Crea nuovo evento
     public String createEvento(EventoDTORequest eventoDTORequest) {
@@ -117,7 +118,17 @@ public class EventoService {
 
     //------METODO PER STATS ADMIN E MOST POPULAR IN HP EVENTI------
     //EVENTI MOST POPULAR - get eventi con più partecipazioni(stato parteciperò)
+    public Page<EventoDTO> getTopEventiByPartecipazioni(Pageable page) {
+        Page<Object[]> results = partecipazioneRepo.findTopEventiByPartecipazioni(page);
+        List<EventoDTO> listaEventiDTO = new ArrayList<>();
 
+        for (Object[] result : results) {
+            Evento evento = (Evento) result[0]; // Il primo oggetto è l'evento
+            EventoDTO eventoDTO = entity_dto(evento);
+            listaEventiDTO.add(eventoDTO);
+        }
+        return new PageImpl<>(listaEventiDTO);
+    }
 
     //---------------------Travasi DTO----------------------------
 
@@ -160,6 +171,7 @@ public class EventoService {
         dto.setUrlEvento(e.getUrlEvento());
         return dto;
     }
+
     //Avendo riutilizzato più volte il codice in questione ho preferito creare una funzione dedicata per evitare troppe ripetizioni
     public Page<EventoDTO> convertToDtoList(Page<Evento> eventi) {
         List<EventoDTO> listaEventiDTO = new ArrayList<>();

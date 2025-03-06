@@ -4,6 +4,7 @@ import com.example.Capstone_BLGH_BE.model.payload.EventoDTO;
 import com.example.Capstone_BLGH_BE.service.EventoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -21,8 +22,8 @@ public class EventoController {
     @Autowired
     EventoService eventoService;
 
-    //Ritorna tutti gli eventi
-    @GetMapping(value = "", produces = "application/json")
+    //Ritorna tutti gli eventi - paginati, esclude quelli passati e li ordina dal piu recente
+    @GetMapping("")
     public ResponseEntity<Page<EventoDTO>> getAllEventi(Pageable page) {
         Page<EventoDTO> eventi = eventoService.getAllEventi(page);
         return new ResponseEntity<>(eventi, HttpStatus.OK);
@@ -57,6 +58,16 @@ public class EventoController {
             @RequestParam String location, @PageableDefault(size = 10) Pageable pageable) {
         Page<EventoDTO> lista = eventoService.getEventiByLocation(location, pageable);
         return new ResponseEntity<>(lista, HttpStatus.OK);
+    }
+
+    // Endpoint per ottenere 10 most popular eventi con più partecipazioni
+    @GetMapping("/top")
+    public ResponseEntity<Page<EventoDTO>> getTopEventiByPartecipazioni(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("partecipazioni")));
+        Page<EventoDTO> topEventi = eventoService.getTopEventiByPartecipazioni(pageable);
+        return new ResponseEntity<>(topEventi, HttpStatus.OK);
     }
 
 }

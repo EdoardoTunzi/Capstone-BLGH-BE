@@ -83,10 +83,6 @@ public class PartecipazioneService {
     //delete partecipazione da idEvento
 
 
-
-
-
-
     // -----------------------------TRAVASI DTO----------------------------------
     public PartecipazioneDTOResponse entity_Dto(Partecipazione p) {
         PartecipazioneDTOResponse dto = new PartecipazioneDTOResponse();
