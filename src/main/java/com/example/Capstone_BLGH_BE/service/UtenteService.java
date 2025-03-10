@@ -44,7 +44,7 @@ public class UtenteService {
         nuovoUtente.setPassword(passwordCodificata);
         //assegnazione img avatar default
         if (dto.getAvatar() == null) {
-            nuovoUtente.setAvatar("https://ibb.co/xS30My3L");
+            nuovoUtente.setAvatar("https://i.postimg.cc/jdPFmBNb/Bari-Live-Avatar.jpg");
         }
         //assegnazione ruolo default - in versioni successive includi organizzatore.
         if (dto.getRuolo() == null || dto.getRuolo().equals("USER")) {

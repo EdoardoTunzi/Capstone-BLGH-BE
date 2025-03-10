@@ -16,7 +16,7 @@ public class JwtUtils {
 
     @Value("${jwt.secret}")
     private String JWTSECRET;
-    private long scadenza = 15;
+    private long scadenza = 60; //ricambia in 15
 
     // Oggetto che occorre per la validazione
     private JwtParser JWTPARSER;

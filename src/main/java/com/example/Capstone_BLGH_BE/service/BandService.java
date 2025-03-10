@@ -114,6 +114,7 @@ public class BandService {
 
     public BandDTO entity_dto(Band b) {
         BandDTO dto = new BandDTO();
+        dto.setId(b.getId());
         dto.setNomeBand(b.getNomeBand());
         dto.setBio(b.getBio());
         dto.setGenereMusicale(b.getGenereMusicale());
