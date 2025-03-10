@@ -186,6 +186,7 @@ public class UtenteService {
         dto.setUsername(u.getUsername());
         dto.setEmail(u.getEmail());
         dto.setAvatar(u.getAvatar());
+        dto.setRuolo(u.getRuolo());
         //password esclusa, gestita in metodo dedicato
         return dto;
     }

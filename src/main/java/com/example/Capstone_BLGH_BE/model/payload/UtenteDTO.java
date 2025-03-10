@@ -22,4 +22,5 @@ public class UtenteDTO {
     private String password;
     @URL
     private String avatar;
+    private String ruolo;
 }
