@@ -25,10 +25,18 @@ public class BandController {
     }
 
     // Cerca bands per nome, anche parziale. Ritorna lista di band con nome simile.
-    // search?nome=rock
-    @GetMapping("/search")
+    // nome?nome=rock
+    @GetMapping("/nome")
     public ResponseEntity<List<BandDTO>> searchBandByNome(@RequestParam String nome) {
         List<BandDTO> bands = bandService.findBandsByNome(nome);
+        return new ResponseEntity<>(bands, HttpStatus.OK);
+    }
+
+    // Cerca bands per genere, anche parziale. Ritorna lista di band
+    // genere?genere=rock
+    @GetMapping("/genere")
+    public ResponseEntity<List<BandDTO>> searchBandByGenere(@RequestParam String genere) {
+        List<BandDTO> bands = bandService.findBandsByGenere(genere);
         return new ResponseEntity<>(bands, HttpStatus.OK);
     }
 

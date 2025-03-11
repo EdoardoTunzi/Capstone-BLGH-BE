@@ -30,7 +30,7 @@ public class BandService {
         return b;
     }
 
-    //Find band by Nome(anche parziale, ritorna lista di band)
+    //Find band by Nome(anche parziale, ritorna lista di bandDTO)
     public List<BandDTO> findBandsByNome(String nome) {
         List<Band> listaBandtrovate = bandRepo.findByNomeBandContainingIgnoreCase(nome);
         List<BandDTO> listaBandDto = new ArrayList<>();
@@ -41,6 +41,20 @@ public class BandService {
         }
         return listaBandDto;
     }
+
+    //Find band by Genere(anche parziale, ritorna lista di bandDTO)
+    public List<BandDTO> findBandsByGenere(String genere) {
+        List<Band> listaBandtrovate = bandRepo.findByGenereMusicaleContainingIgnoreCase(genere);
+        List<BandDTO> listaBandDto = new ArrayList<>();
+
+        for (Band b : listaBandtrovate) {
+            BandDTO dto = entity_dto(b);
+            listaBandDto.add(dto);
+        }
+        return listaBandDto;
+    }
+
+
 
     //Get all band
     public Page<BandDTO> getAllBands(Pageable page) {
