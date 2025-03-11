@@ -24,5 +24,10 @@ public interface EventoDAORepository extends JpaRepository<Evento, Long> {
     Page<Evento> findByBandNomeBandContainingIgnoreCaseAndDataGreaterThanEqualOrderByDataAsc(String nomeBand, LocalDate oggi, Pageable page);
 
     // Filtra per location (con ricerca parziale)
-    Page<Evento> findByLocationContainingIgnoreCaseAndDataGreaterThanEqualOrderByDataDesc(String location, LocalDate oggi, Pageable page);}
+    Page<Evento> findByLocationContainingIgnoreCaseAndDataGreaterThanEqualOrderByDataDesc(String location, LocalDate oggi, Pageable page);
+
+    // Filtra per nome evento
+    Page<Evento> findByNomeContainingIgnoreCaseAndDataGreaterThanEqual(String nome,LocalDate oggi, Pageable page);
+
+}
 

@@ -69,6 +69,13 @@ public class EventoService {
         return convertToDtoList(eventi);
     }
 
+    // Get all eventi filtrati per nome evento
+    public Page<EventoDTO> getEventiByNome(String nome, Pageable page) {
+        LocalDate oggi = LocalDate.now();
+        Page<Evento> eventi = eventoRepo.findByNomeContainingIgnoreCaseAndDataGreaterThanEqual(nome, oggi, page);
+        return convertToDtoList(eventi);
+    }
+
     //EVENTI MOST POPULAR - get eventi con più partecipazioni(stato parteciperò)
     public Page<EventoDTO> getTopEventiByPartecipazioni(Pageable page) {
         Page<Object[]> results = partecipazioneRepo.findTopEventiByPartecipazioni(page);
@@ -160,6 +167,7 @@ public class EventoService {
         dto.setUrlEvento(e.getUrlEvento());
         return dto;
     }
+
     //Avendo riutilizzato più volte il codice in questione
     //ho preferito creare una funzione dedicata per evitare troppe ripetizioni.
     public Page<EventoDTO> convertToDtoList(Page<Evento> eventi) {

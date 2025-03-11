@@ -60,6 +60,13 @@ public class EventoController {
         return new ResponseEntity<>(lista, HttpStatus.OK);
     }
 
+    //Filtra eventi per nome evento, anche parziale, escludendo eventi passati.
+    @GetMapping("/nome")
+    public ResponseEntity<Page<EventoDTO>> getEventiByNome(@RequestParam String nome, Pageable pageable)  {
+        Page<EventoDTO> lista = eventoService.getEventiByNome(nome, pageable);
+        return new ResponseEntity<>(lista, HttpStatus.OK);
+    }
+
     // Endpoint per ottenere 10 most popular eventi(con più partecipazioni)
     @GetMapping("/top")
     public ResponseEntity<Page<EventoDTO>> getTopEventiByPartecipazioni(
