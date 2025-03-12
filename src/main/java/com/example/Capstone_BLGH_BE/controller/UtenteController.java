@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -76,7 +77,10 @@ public class UtenteController {
             Map mappa = cloudinaryConfig.uploader().upload(avatar.getBytes(), ObjectUtils.emptyMap());
             String urlImage = mappa.get("secure_url").toString();
             utenteService.updateAvatarPicByUsername(username, urlImage);
-            return new ResponseEntity<>("Immagine avatar sostituita", HttpStatus.OK);
+            // Creo una risposta con l'URL dell'avatar
+            Map<String, String> response = new HashMap<>();
+            response.put("avatarUrl", urlImage);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (IOException e) {
             throw new RuntimeException("Errore nel caricamento dell'immagine. " + e);
         }
