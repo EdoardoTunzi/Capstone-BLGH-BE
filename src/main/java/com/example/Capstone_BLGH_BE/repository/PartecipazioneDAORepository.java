@@ -23,4 +23,6 @@ public interface PartecipazioneDAORepository extends JpaRepository<Partecipazion
             "GROUP BY p.evento " +
             "ORDER BY partecipazioni DESC")
     public Page<Object[]> findTopEventiByPartecipazioni(Pageable pageable);
+
+    Optional<Partecipazione> findByUtenteAndEvento(Utente utente, Evento evento);
 }

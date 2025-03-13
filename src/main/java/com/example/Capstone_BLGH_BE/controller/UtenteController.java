@@ -127,11 +127,11 @@ public class UtenteController {
 
     //Modifica stato partecipazione
     //PUT - esempio: /user/partecipazione/5?stato=PARTECIPERO
-    @PutMapping("/partecipazione/{idPartecipazione}")
-    public ResponseEntity<?> updatePartecipazione(@PathVariable Long idPartecipazione, @RequestParam StatoPartecipazione stato) {
+    @PutMapping("/partecipazione/{idEvento}")
+    public ResponseEntity<?> updatePartecipazione(@PathVariable Long idEvento, @RequestParam StatoPartecipazione stato) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-        String messaggio = partecipazioneService.updateStatoPartecipazione(idPartecipazione, stato, username);
+        String messaggio = partecipazioneService.updateStatoPartecipazione(idEvento, stato, username);
         return new ResponseEntity<>(messaggio, HttpStatus.OK);
     }
 

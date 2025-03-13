@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +41,16 @@ public class PartecipazioneService {
         Utente utente = utenteRepo.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("Utente non trovato"));
         Page<Partecipazione> listaPartecipazioni = partecipazioneRepo.findByUtenteAndStatoPartecipazioneOrderByEventoData(utente, stato, page);
+
+        // Verifico se è il momento di aggiornare lo stato della partecipazione a un evento passato con stato PARTECIPERO
+        for (Partecipazione partecipazione : listaPartecipazioni) {
+            Evento evento = partecipazione.getEvento();
+            // Se l'evento è passato e lo stato è "PARTECIPERO", aggiorna lo stato
+            if (evento.getData().isBefore(LocalDate.now()) && partecipazione.getStatoPartecipazione() == StatoPartecipazione.PARTECIPERO) {
+                partecipazione.setStatoPartecipazione(StatoPartecipazione.PARTECIPATO);
+            }
+        }
+
         List<PartecipazioneDTOResponse> listaDTO = new ArrayList<>();
         for (Partecipazione p : listaPartecipazioni) {
             PartecipazioneDTOResponse partDTO = entity_Dto(p);
@@ -67,8 +78,12 @@ public class PartecipazioneService {
     }
 
     //Modifica stato partecipazione
-    public String updateStatoPartecipazione(long idPartecipazione, StatoPartecipazione nuovoStato, String username) {
-        Partecipazione partecipazioneTrovata = partecipazioneRepo.findById(idPartecipazione)
+    public String updateStatoPartecipazione(long idEvento, StatoPartecipazione nuovoStato, String username) {
+        Utente utente = utenteRepo.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException("Utente non trovato"));
+        Evento evento = eventoRepo.findById(idEvento)
+                .orElseThrow(() -> new NotFoundException("Evento non trovato"));
+        Partecipazione partecipazioneTrovata = partecipazioneRepo.findByUtenteAndEvento(utente, evento)
                 .orElseThrow(() -> new NotFoundException("Partecipazione non trovata"));
 
         //qui controllo se l'utente loggato è proprietario della partecipazione
