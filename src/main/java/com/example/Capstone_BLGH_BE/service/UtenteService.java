@@ -106,14 +106,27 @@ public class UtenteService {
     public UtenteDTO updateUtenteInfoByUsername(String username, UtenteDTO utenteDTO) {
         Utente utenteTrovato = utenteRepo.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("Utente non trovato."));
+
+        //Se l’utente non sta modificando il proprio username, il controllo viene saltato.
+        //Altrimenti verifico che non sia già presente nel database.
+        if (!utenteTrovato.getUsername().equals(utenteDTO.getUsername()) &&
+                utenteRepo.existsByUsername(utenteDTO.getUsername())) {
+            throw new UsernameDuplicateException("Username già utilizzato, non disponibile");
+        }
+
+        //Se l’utente non sta modificando la propria email, il controllo viene saltato.
+        //Altrimenti verifico che non sia già presente nel database.
+        if (!utenteTrovato.getEmail().equals(utenteDTO.getEmail()) &&
+                utenteRepo.existsByEmail(utenteDTO.getEmail())) {
+            throw new EmailDuplicateException("Email già utilizzata da un altro utente");
+        }
+
         utenteTrovato.setNome(utenteDTO.getNome());
         utenteTrovato.setCognome(utenteDTO.getCognome());
         utenteTrovato.setUsername(utenteDTO.getUsername());
         utenteTrovato.setEmail(utenteDTO.getEmail());
-        utenteTrovato.setAvatar(utenteDTO.getAvatar());
 
-        UtenteDTO dto = entity_Dto(utenteTrovato);
-        return dto;
+        return entity_Dto(utenteTrovato);
     }
 
     //Modifica password dell'utente loggato
