@@ -135,6 +135,8 @@ public class EventoService {
         eventoRicercato.setOra(dto.getOra());
         eventoRicercato.setLocandina(dto.getLocandina());
         eventoRicercato.setBand(band);
+        eventoRicercato.setUrlEvento(dto.getUrlEvento());
+        eventoRicercato.setPrezzoIngresso(dto.getPrezzoIngresso());
         return "Evento con id: " + eventoRicercato.getId() + ", modificato con successo!";
     }
 
