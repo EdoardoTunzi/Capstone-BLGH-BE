@@ -64,7 +64,7 @@ public class BandService {
             BandDTO bandDTO = entity_dto(b);
             listaBandDto.add(bandDTO);
         }
-        return new PageImpl<>(listaBandDto);
+        return new PageImpl<>(listaBandDto, page, listaBands.getTotalElements());
     }
 
     //-----------------------------METODI ADMIN---------------------------------

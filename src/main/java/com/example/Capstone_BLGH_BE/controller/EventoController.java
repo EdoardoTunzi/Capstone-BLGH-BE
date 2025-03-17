@@ -24,7 +24,7 @@ public class EventoController {
 
     //Ritorna tutti gli eventi - paginati, esclude quelli passati e li ordina dal piu recente
     @GetMapping("")
-    public ResponseEntity<Page<EventoDTO>> getAllEventi(Pageable page) {
+    public ResponseEntity<Page<EventoDTO>> getAllEventi(@PageableDefault(size = 500) Pageable page) {
         Page<EventoDTO> eventi = eventoService.getAllEventi(page);
         return new ResponseEntity<>(eventi, HttpStatus.OK);
     }

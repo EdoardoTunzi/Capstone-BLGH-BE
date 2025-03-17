@@ -5,6 +5,7 @@ import com.example.Capstone_BLGH_BE.service.BandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +19,8 @@ public class BandController {
     BandService bandService;
 
     //Ritorna tutte le band
-    @GetMapping(value = "", produces = "application/json")
-    public ResponseEntity<Page<BandDTO>> getAllEventi(Pageable page) {
+    @GetMapping("")
+    public ResponseEntity<Page<BandDTO>> getAllEventi(@PageableDefault(size = 500) Pageable page) {
         Page<BandDTO> bands = bandService.getAllBands(page);
         return new ResponseEntity<>(bands, HttpStatus.OK);
     }

@@ -178,6 +178,6 @@ public class EventoService {
             EventoDTO eventoDTO = entity_dto(e);
             listaEventiDTO.add(eventoDTO);
         }
-        return new PageImpl<>(listaEventiDTO);
+        return new PageImpl<>(listaEventiDTO, eventi.getPageable(), eventi.getTotalElements());
     }
 }

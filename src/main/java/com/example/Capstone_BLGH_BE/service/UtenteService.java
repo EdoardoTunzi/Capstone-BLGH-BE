@@ -135,7 +135,7 @@ public class UtenteService {
                 .orElseThrow(() -> new NotFoundException("Utente non trovato."));
         //confronta la password immessa (oldPassword) con quella criptata memorizzata nel database.
         if (!passwordEncoder.matches(oldPassword, utenteTrovato.getPassword())) {
-            throw new UnauthorizedException("La password vecchia/attuale che hai inserito non è corretta.");
+            throw new UnauthorizedException("La password attuale che hai inserito non è corretta.");
         }
         String nuovaPasswordCodificata = passwordEncoder.encode(newPassword);
         utenteTrovato.setPassword(nuovaPasswordCodificata);
