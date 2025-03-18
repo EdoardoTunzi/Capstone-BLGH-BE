@@ -38,7 +38,7 @@ public class EventoController {
     // es. /eventi/data?data=2025-06-12
     @GetMapping("/data")
     public ResponseEntity<Page<EventoDTO>> getEventiByData(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data,@PageableDefault(size = 10) Pageable pageable) {
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data,@PageableDefault(size = 500) Pageable pageable) {
         Page<EventoDTO> lista = eventoService.getEventiByData(data, pageable);
         return new ResponseEntity<>(lista, HttpStatus.OK);
     }
@@ -47,7 +47,7 @@ public class EventoController {
     // es. /eventi/band?nomeBand=rock
     @GetMapping("/band")
     public ResponseEntity<Page<EventoDTO>> getEventiByBand(
-            @RequestParam String nomeBand,@PageableDefault(size = 10) Pageable pageable) {
+            @RequestParam String nomeBand,@PageableDefault(size = 500) Pageable pageable) {
         Page<EventoDTO> lista = eventoService.getEventiByNomeBand(nomeBand, pageable);
         return new ResponseEntity<>(lista, HttpStatus.OK);
     }
@@ -55,14 +55,14 @@ public class EventoController {
     //es. /eventi/location?location=teatro
     @GetMapping("/location")
     public ResponseEntity<Page<EventoDTO>> getEventiByLocation(
-            @RequestParam String location, @PageableDefault(size = 10) Pageable pageable) {
+            @RequestParam String location, @PageableDefault(size = 500) Pageable pageable) {
         Page<EventoDTO> lista = eventoService.getEventiByLocation(location, pageable);
         return new ResponseEntity<>(lista, HttpStatus.OK);
     }
 
     //Filtra eventi per nome evento, anche parziale, escludendo eventi passati.
     @GetMapping("/nome")
-    public ResponseEntity<Page<EventoDTO>> getEventiByNome(@RequestParam String nome, Pageable pageable)  {
+    public ResponseEntity<Page<EventoDTO>> getEventiByNome(@RequestParam String nome,@PageableDefault(size = 100) Pageable pageable)  {
         Page<EventoDTO> lista = eventoService.getEventiByNome(nome, pageable);
         return new ResponseEntity<>(lista, HttpStatus.OK);
     }
