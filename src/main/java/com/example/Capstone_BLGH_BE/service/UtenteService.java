@@ -48,11 +48,9 @@ public class UtenteService {
         if (dto.getAvatar() == null) {
             nuovoUtente.setAvatar("https://i.postimg.cc/jdPFmBNb/Bari-Live-Avatar.jpg");
         }
-        //assegnazione ruolo default - in versioni successive includi organizzatore.
+        //assegnazione ruolo default
         if (dto.getRuolo() == null || dto.getRuolo().equals("USER")) {
             nuovoUtente.setRuolo("USER");
-        } else if (dto.getRuolo().equals("ADMIN")){
-            nuovoUtente.setRuolo("ADMIN");
         } else {
             throw new BadRequestException("Errore. Il valore inserito come ruolo, non è valido.");
         }
