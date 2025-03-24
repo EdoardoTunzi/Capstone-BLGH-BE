@@ -34,6 +34,8 @@ public class UtenteService {
     AuthenticationManager authenticationManager;
     @Autowired
     JwtUtils jwtUtils;
+    @Autowired
+    MailService mailService;
 
     //-----------------------------METODI PUBLIC---------------------------------
     //Registrazione nuovo utente
@@ -56,6 +58,12 @@ public class UtenteService {
         }
         //salvataggio
         Long id = utenteRepo.save(nuovoUtente).getId();
+
+        mailService.sendEmail(nuovoUtente.getEmail(),
+                "Benvenuto su Bari Live-Gigs Hub!",
+                "Ciao " + nuovoUtente.getNome() + ", grazie per esserti registrato! " +
+                        "Inizia ad esplorare band ed eventi, una volta effettuato il login troverai tutto comodamente nella sezione MyHub."
+                );
         return "Nuovo utente creato con id: " + id;
     }
 
