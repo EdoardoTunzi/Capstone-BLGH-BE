@@ -61,9 +61,10 @@ public class UtenteService {
 
         mailService.sendEmail(nuovoUtente.getEmail(),
                 "Benvenuto su Bari Live-Gigs Hub!",
-                "Ciao " + nuovoUtente.getNome() + ", grazie per esserti registrato! " +
-                        "Inizia ad esplorare band ed eventi, una volta effettuato il login troverai tutto comodamente nella sezione MyHub."
-                );
+                "Ciao " + nuovoUtente.getNome() + ",\n\n" +
+                        "Grazie per esserti registrato! Inizia ad esplorare band ed eventi, " +
+                        "una volta effettuato il login troverai tutto comodamente nella sezione MyHub."
+        );
         return "Nuovo utente creato con id: " + id;
     }
 
@@ -147,6 +148,12 @@ public class UtenteService {
         }
         String nuovaPasswordCodificata = passwordEncoder.encode(newPassword);
         utenteTrovato.setPassword(nuovaPasswordCodificata);
+
+        mailService.sendEmail(utenteTrovato.getEmail(),
+                "Password cambiata",
+                "Ciao " + utenteTrovato.getNome() + ",\n\n" +
+                        "La tua password è stata modificata correttamente. Se non hai richiesto tu un cambio password, segnala subito il problema scrivendo a admin@barilive.it"
+        );
 
         return "Password modificata correttamente!";
     }
