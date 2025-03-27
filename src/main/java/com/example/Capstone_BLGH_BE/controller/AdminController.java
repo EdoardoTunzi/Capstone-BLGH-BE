@@ -53,6 +53,7 @@ public class AdminController {
         String messaggio = eventoService.createEvento(dto);
         return new ResponseEntity<>(messaggio, HttpStatus.OK);
     }
+
     //Modifica evento
     @PutMapping("/evento/{idEvento}")
     public ResponseEntity<?> updateEventoById(@Validated @RequestBody EventoDTORequest dto, @PathVariable Long idEvento, BindingResult validazione) {
@@ -66,13 +67,14 @@ public class AdminController {
         String messaggio = eventoService.updateEvento(dto, idEvento);
         return new ResponseEntity<>(messaggio, HttpStatus.OK);
     }
+
     //Cancella evento
     @DeleteMapping("/evento/{idEvento}")
     public ResponseEntity<?> deleteEventoById(@PathVariable Long idEvento) {
         String messaggio = eventoService.deleteEvento(idEvento);
         return new ResponseEntity<>(messaggio, HttpStatus.OK);
     }
-    //modifica fot evento
+
 
     //-----------------------------GESTIONE BAND---------------------------------
     //Crea nuova band
@@ -88,6 +90,7 @@ public class AdminController {
         String messaggio = bandService.createBand(bandDTO);
         return new ResponseEntity<>(messaggio, HttpStatus.OK);
     }
+
     //Modifica Band
     @PutMapping("/band/{idBand}")
     public ResponseEntity<?> updateBandById(@Validated @RequestBody BandDTO dto, @PathVariable Long idBand, BindingResult validazione) {
@@ -101,6 +104,7 @@ public class AdminController {
         String messaggio = bandService.updateBand(dto, idBand);
         return new ResponseEntity<>(messaggio, HttpStatus.OK);
     }
+
     //Modifica foto band da Id
     @PutMapping("/band/foto/{idBand}")
     public ResponseEntity<?> updateFotoBandById(@RequestPart("foto")MultipartFile foto, @PathVariable Long idBand) {
@@ -114,6 +118,7 @@ public class AdminController {
             throw new RuntimeException("Errore nel caricamento dell'immagine. " + e );
         }
     }
+
     //Cancella band da id
     @DeleteMapping("/band/{idBand}")
     public ResponseEntity<?> deleteBandById(@PathVariable Long idBand) {
@@ -128,6 +133,7 @@ public class AdminController {
         Page<UtenteDTO> utenti = utenteService.getAllUtenti(page);
         return new ResponseEntity<>(utenti, HttpStatus.OK);
     }
+
     //Cancella un utente
     @DeleteMapping("/utente/{idUtente}")
     public ResponseEntity<?> deleteUtenteById(@PathVariable Long idUtente) {

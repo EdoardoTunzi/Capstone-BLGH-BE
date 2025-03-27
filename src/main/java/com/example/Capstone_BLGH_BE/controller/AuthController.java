@@ -42,6 +42,7 @@ public class AuthController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
     //LOGIN
     @PostMapping("/login")
     public ResponseEntity<?> login(@Validated @RequestBody LoginRequest loginDTO, BindingResult checkValidazione) {

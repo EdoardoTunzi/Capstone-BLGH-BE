@@ -28,6 +28,7 @@ public class EventoController {
         Page<EventoDTO> eventi = eventoService.getAllEventi(page);
         return new ResponseEntity<>(eventi, HttpStatus.OK);
     }
+
     //Trova evento da id
     @GetMapping("/{id}")
     public EventoDTO getEventoById(@PathVariable long id) {
@@ -51,6 +52,7 @@ public class EventoController {
         Page<EventoDTO> lista = eventoService.getEventiByNomeBand(nomeBand, pageable);
         return new ResponseEntity<>(lista, HttpStatus.OK);
     }
+
     //Filtra eventi per nome Location, anche parziale, esclude eventi passati e ordina per data evento ASC
     //es. /eventi/location?location=teatro
     @GetMapping("/location")

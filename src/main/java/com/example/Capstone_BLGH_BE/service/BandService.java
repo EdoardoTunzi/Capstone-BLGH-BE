@@ -17,9 +17,9 @@ import java.util.List;
 @Service
 @Transactional
 public class BandService {
+
     @Autowired
     BandDAORepository bandRepo;
-
 
     //-----------------------------METODI PUBLIC---------------------------------
     //Find band by id
@@ -53,8 +53,6 @@ public class BandService {
         }
         return listaBandDto;
     }
-
-
 
     //Get all band
     public Page<BandDTO> getAllBands(Pageable page) {
